@@ -46,10 +46,10 @@ export default createStore({
         // 设置菜单
         async [constant.SET_MENU_LIST]({ state, commit }) {
             const res = await getMenu();
-            console.log('接口返回菜单配置', res.data)
+            console.log('接口返回菜单配置', res.data.data)
             if (res.errorCode === 0) {
                 // 整理菜单
-                const menuList = formatMenu(res.data);
+                const menuList = formatMenu(res.data.data);
                 commit(constant.SET_MENULIST, menuList)
             }
         }

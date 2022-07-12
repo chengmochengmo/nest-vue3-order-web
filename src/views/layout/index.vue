@@ -36,9 +36,9 @@
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
         <a-breadcrumb style="margin: 16px 0">
-          <a-breadcrumb-item>Home</a-breadcrumb-item>
-          <a-breadcrumb-item>List</a-breadcrumb-item>
-          <a-breadcrumb-item>App</a-breadcrumb-item>
+          <a-breadcrumb-item v-for="item in breadcrumb" :key="item.auth">
+            <router-link :to="{name: item.auth}">{{item.name}}</router-link>
+          </a-breadcrumb-item>
         </a-breadcrumb>
         <a-layout-content
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
@@ -51,39 +51,66 @@
 </template>
 <script setup lang='ts'>
 import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
-import { ref, onBeforeMount } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import { menuConfig } from '../../config/menu'
 import { MenuList } from '../../types/menu/interface';
 const store = useStore();
 const route = useRoute();
+
 // 当前路由名
-const currentRouteName = route.name;
+const currentRouteName = reactive(route);
+// 根据路由名 找到当前菜单配置
+const findMenuConfig = () => menuConfig.find((item: any) => item.auth === currentRouteName.name) as MenuList;
+// 根据当前菜单配置 找到父菜单配置
+const findParetMenuConfig = (currentMenuConfig: any) => menuConfig.find((item: any) => currentMenuConfig.pid === item.id) as MenuList;
 
 // 菜单
 const menuList = store.state.menuList;
+
 // 横向导航选中
 const selectedKeysTransverse = ref(['1']);
-// 竖向导航选中、展开
+
+// 竖向导航展开
 const openKeysVerticalMenu = (): string => {
-  const currentMenuConfig = menuConfig.find((item: any) => item.auth === currentRouteName) as MenuList;
-  const currentMenuConfigPid = menuConfig.find((item: any) => currentMenuConfig.pid === item.id) as MenuList;
-  if (currentMenuConfig?.isMenu !== 'no') return currentMenuConfigPid.auth;
-  return (menuConfig.find((item: any) => currentMenuConfigPid.pid === item.id) as MenuList).auth;
+  const currentMenuConfig = findMenuConfig();
+  const currentMenuConfigParent = findParetMenuConfig(currentMenuConfig);
+  if (currentMenuConfig?.isMenu !== 'no') return currentMenuConfigParent.auth;
+  return (menuConfig.find((item: any) => currentMenuConfigParent.pid === item.id) as MenuList).auth;
 }
+const openKeysVertical = ref([openKeysVerticalMenu()]);
+// 竖向导航选中
 const selectedKeysVerticalMenu = (): string => {
-  const currentMenuConfig = menuConfig.find((item: any) => item.auth === currentRouteName) as MenuList;
+  const currentMenuConfig = findMenuConfig();
   if (currentMenuConfig?.isMenu !== 'no') return currentMenuConfig.auth;
-  return (menuConfig.find((item: any) => currentMenuConfig.pid === item.id) as MenuList).auth;
+  const currentMenuConfigParent = findParetMenuConfig(currentMenuConfig);
+  return currentMenuConfigParent.auth;
 }
 const selectedKeysVertical = ref([selectedKeysVerticalMenu()]);
-const openKeysVertical = ref([openKeysVerticalMenu()]);
 
 // 面包屑
-const breadcrumbList = () => {
-  
+const breadcrumbList = (): object[] => {
+  const currentMenuConfig = findMenuConfig();
+  if (currentMenuConfig?.isMenu !== 'no') {
+    if (currentMenuConfig?.auth === 'homeIndex') return [currentMenuConfig];
+    return [{ name: '首页', auth: 'homeIndex' }, currentMenuConfig];
+  }
+  const currentMenuConfigParent = findParetMenuConfig(currentMenuConfig);
+  return [{ name: '首页', auth: 'homeIndex' }, currentMenuConfigParent, currentMenuConfig];
 }
+const breadcrumb = ref(breadcrumbList());
+
+// 路由变化触发导航&面包屑变化
+watch(route, () => {
+  console.log('当前路由名：', currentRouteName.name)
+  if (currentRouteName.name === 'login') return;
+  breadcrumb.value = breadcrumbList();
+  selectedKeysVertical.value = [selectedKeysVerticalMenu()];
+  openKeysVertical.value = [openKeysVerticalMenu()];
+}, {
+  immediate: true
+})
 
 </script>
 <style scoped lang='less'>

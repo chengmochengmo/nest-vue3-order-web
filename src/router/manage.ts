@@ -30,5 +30,13 @@ export default [
         meta: {
             title: '编辑角色'
         }
+    },
+    {
+        path: '/manageMenu',
+        name: 'manageMenu',
+        component: () => import('../views/manage/menu/index.vue'),
+        meta: {
+            title: '菜单列表'
+        }
     }
 ]

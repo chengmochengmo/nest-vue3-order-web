@@ -5,7 +5,6 @@ export const formatMenu = (menuList: any[]) => {
     // 需要服务端整理menuid顺序
     menuList.forEach(item => {
         if (item.isMenu === 'no') return;
-        console.log(item)
         item.children = [];
         routeMap[item.id] = item;
         // 根节点

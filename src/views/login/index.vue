@@ -36,6 +36,7 @@
 import { reactive } from "vue";
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { message } from 'ant-design-vue';
 import { login } from "../../api/manage";
 import constant from '../../store/constant'
 
@@ -55,6 +56,7 @@ const onFinish = async (values: any) => {
   const res = await login(values);
   if (res.errorCode === 0) {
     store.dispatch(constant.AFTER_LOGIN, res.data);
+    message.success(res.msg);
     router.back()
   }
 };
