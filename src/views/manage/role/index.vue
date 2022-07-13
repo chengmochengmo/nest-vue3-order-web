@@ -7,6 +7,9 @@
       <template v-if="column.dataIndex === 'createTime'">
         <span v-formatDate>{{ text }}</span>
       </template>
+      <template v-if="column.dataIndex === 'menuIds'">
+        <span>{{ record.menuNames.map(item => item.menu.name).join('; ') }}</span>
+      </template>
       <template v-if="column.dataIndex === 'handle'">
         <a-button type="text" danger @click="delItem(record._id)">删除</a-button>
       </template>

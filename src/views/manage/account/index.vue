@@ -98,7 +98,7 @@ const getRolesList = async () => {
 const visible = ref(false);
 const bindRoleModalShow = (record: any) => {
   visible.value = true;
-  roleId.value = record.roleId || undefined;
+  roleId.value = record.roleId ? record.roleId.id : undefined;
   currentAccountId.value = record._id;
 }
 // 确认绑定

@@ -36,8 +36,8 @@ onBeforeMount(() => {
 })
 
 // 整理选中的id
-const formatCheckedIds = (): string => {
-  const menuIdsArr: any[] = []; 
+const formatCheckedIds = (): string[] => {
+  const menuIdsArr: string[] = []; 
   for (let i = 0; i < menuList.value.length; i++) {
     const val = menuList.value[i];
     if (val.state.checkAll) {
@@ -60,7 +60,7 @@ const formatCheckedIds = (): string => {
       }
     }
   }
-  return menuIdsArr.join(',');
+  return menuIdsArr;
 }
 
 // 表单验证
@@ -76,11 +76,11 @@ const buttonCol = ref(formButtonCol);
 // 表单字段
 interface FormState {
   name: string;
-  menuIds: string;
+  menuIds: string[];
 }
 const formState: UnwrapRef<FormState> = reactive({
   name: '',
-  menuIds: ''
+  menuIds: []
 });
 
 // 提交信息

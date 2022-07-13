@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
 import createPersist from 'vuex-localstorage'
-import { StoreState } from "../types/store/interface";
+import { StoreState, UserInfo } from "../types/store/interface";
 import constant from './constant'
 import { getMenu } from "../api/manage";
 import { formatMenu } from '../utils/menu'
@@ -15,7 +15,7 @@ const persist = createPersist({
 export default createStore({
     state<StoreState>() {
         return {
-            userInfo: {}, // 用户信息
+            userInfo: {} as UserInfo, // 用户信息
             menuList: [], // 菜单
             aaa: 1
         }
@@ -45,7 +45,7 @@ export default createStore({
         },
         // 设置菜单
         async [constant.SET_MENU_LIST]({ state, commit }) {
-            const res = await getMenu();
+            const res = await getMenu({role: state.userInfo.roleId});
             console.log('接口返回菜单配置', res.data.data)
             if (res.errorCode === 0) {
                 // 整理菜单
