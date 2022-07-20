@@ -1,16 +1,17 @@
 import request from "./request";
 
 // 登录
-export const login = (data: any) => {
+export const login = (data?: any) => {
     return request(`serve/users/login`, data)
 }
 
 // 添加新账号
-export const regUser = (data: any) => {
+export const regUser = (data?: any) => {
     return request(`serve/users/editUser`, data)
 }
 
-export const delUser = (data: any) => {
+// 删除帐号
+export const delUser = (data?: any) => {
     return request(`serve/users/delUser`, data)
 }
 

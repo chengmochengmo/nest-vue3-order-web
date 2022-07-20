@@ -111,6 +111,7 @@ const bindRole = async (state: boolean) => {
       roleId: roleId.value
     })
     if (res.errorCode === 0) {
+      getUsersList();
       message.success(res.msg);
     }
   } else {
